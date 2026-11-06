@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Margin</title>
+<meta name="description" content="Margin is a Markdown-only notes app. Upload, read, edit, highlight and save .md files, online or offline.">
+<meta name="theme-color" content="#EEF0F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15191C" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Margin">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preload" href="fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/app.css">
+<script>
+  try {
+    var t = localStorage.getItem('margin.theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    var s = localStorage.getItem('margin.textSize');
+    if (s) document.documentElement.setAttribute('data-size', s);
+  } catch (e) {}
+</script>
+</head>
+<body>
+<div class="app" id="app" data-screen="library">
+
+  <!-- ============ Library ============ -->
+  <aside class="library" id="library" aria-label="Library">
+    <header class="lib-head">
+      <div class="brand">
+        <svg class="logo" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7" fill="#0D7A6F"/><rect x="5" y="5" width="20" height="20" rx="3" fill="#FBFBFC"/><line x1="10" y1="5" x2="10" y2="25" stroke="#0D7A6F" stroke-width="1.5"/><line x1="13" y1="10" x2="21" y2="10" stroke="#16191D" stroke-width="2" stroke-linecap="round"/><line x1="13" y1="15" x2="21" y2="15" stroke="#9AA3AD" stroke-width="1.5" stroke-linecap="round"/><line x1="13" y1="19" x2="18" y2="19" stroke="#9AA3AD" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span class="brand-name">Margin</span>
+      </div>
+      <div class="row-tight">
+        <button class="btn small" id="installBtn" type="button" hidden>Install app</button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="lib-actions">
+      <button class="btn primary" id="newBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New note
+      </button>
+      <button class="btn" id="uploadBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>Upload .md
+      </button>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Library sections">
+      <button class="tab" role="tab" id="tabNotes" type="button" aria-selected="true" aria-controls="notesPanel">Notes</button>
+      <button class="tab" role="tab" id="tabHighlights" type="button" aria-selected="false" aria-controls="hlPanel" tabindex="-1">Highlights <span class="badge" id="hlBadge"></span></button>
+    </div>
+
+    <div class="panel" id="notesPanel" role="tabpanel" aria-labelledby="tabNotes">
+      <div class="search-row">
+        <div class="field search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+          <label class="sr-only" for="search">Search notes</label>
+          <input id="search" type="search" placeholder="Search titles and text" autocomplete="off" spellcheck="false">
+        </div>
+        <label class="sr-only" for="sortSel">Sort notes by</label>
+        <select id="sortSel" class="select" title="Sort notes">
+          <option value="updated">Last edited</option>
+          <option value="name">Name</option>
+          <option value="created">Date added</option>
+        </select>
+      </div>
+      <p class="lib-meta" id="libMeta"></p>
+      <ul class="note-list" id="noteList"></ul>
+      <div class="empty" id="libEmpty" hidden></div>
+    </div>
+
+    <div class="panel" id="hlPanel" role="tabpanel" aria-labelledby="tabHighlights" hidden>
+      <div class="chips" id="hlFilters" role="group" aria-label="Filter by colour"></div>
+      <div class="hl-list" id="hlList"></div>
+      <div class="empty" id="hlEmpty" hidden>
+        <p><strong>No highlights yet.</strong></p>
+        <p>Select some text in a note and tap the highlighter. Every highlight from every note shows up here.</p>
+      </div>
+    </div>
+
+    <div class="tip" id="iosTip" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 8v6M9.5 11.5L12 14l2.5-2.5"/></svg>
+      <span>Install Margin: tap <b>Share</b>, then <b>Add to Home Screen</b>.</span>
+      <button class="icon-btn" id="iosTipClose" type="button" aria-label="Dismiss install tip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </aside>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace" id="workspace">
+    <div class="ws-empty" id="wsEmpty">
+      <div>
+        <p class="ws-empty-title">Pick a note, or bring in a .md file</p>
+        <p>Drag Markdown files onto this window, or use <b>Upload .md</b>.</p>
+      </div>
+    </div>
+
+    <div class="note" id="note" hidden>
+      <header class="ws-head">
+        <button class="icon-btn back" id="backBtn" type="button" aria-label="Back to library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="title-wrap">
+          <div class="name-row">
+            <label class="sr-only" for="nameInput">Note name</label>
+            <input id="nameInput" class="name-input" autocomplete="off" spellcheck="false">
+            <span class="ext" id="extLabel">.md</span>
+            <svg class="pin-mark" id="pinMark" viewBox="0 0 24 24" aria-label="Pinned" role="img" hidden><path d="M9 3h6l-1 6 4 4H6l4-4z"/><path d="M12 13v8"/></svg>
+          </div>
+          <div class="status" id="status" aria-live="polite"></div>
+        </div>
+        <div class="seg" role="group" aria-label="View" id="modeSeg">
+          <button type="button" data-mode="edit" aria-pressed="false">Edit</button>
+          <button type="button" data-mode="split" aria-pressed="false" class="wide-only">Split</button>
+          <button type="button" data-mode="read" aria-pressed="false">Read</button>
+        </div>
+        <div class="head-actions">
+          <button class="icon-btn" id="findBtn" type="button" aria-label="Find in note" title="Find in note (Ctrl F)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+          </button>
+          <button class="icon-btn" id="outlineBtn" type="button" aria-label="Outline" title="Outline" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M8 12h12M8 18h12"/></svg>
+          </button>
+          <button class="btn wide-only" id="downloadBtn" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>Download .md
+          </button>
+          <button class="btn primary wide-only" id="saveFileBtn" type="button" hidden>Save to file <kbd>Ctrl S</kbd></button>
+          <button class="icon-btn" id="moreBtn" type="button" aria-label="More actions" aria-haspopup="menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="fill"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="findbar" id="findBar" hidden>
+        <div class="field find-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+          <label class="sr-only" for="findInput">Find in note</label>
+          <input id="findInput" type="search" placeholder="Find in note" autocomplete="off" spellcheck="false" enterkeyhint="search">
+          <span class="find-count" id="findCount" aria-live="polite"></span>
+        </div>
+        <button class="icon-btn" id="findPrev" type="button" aria-label="Previous match"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+        <button class="icon-btn" id="findNext" type="button" aria-label="Next match"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <button class="icon-btn" id="findClose" type="button" aria-label="Close find"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+
+      <div class="toolbar" id="toolbar" role="toolbar" aria-label="Formatting">
+        <button type="button" class="tb" data-cmd="heading" aria-label="Heading" title="Heading"><span class="tb-txt">H</span></button>
+        <button type="button" class="tb" data-cmd="bold" aria-label="Bold" title="Bold (Ctrl B)"><span class="tb-txt b">B</span></button>
+        <button type="button" class="tb" data-cmd="italic" aria-label="Italic" title="Italic (Ctrl I)"><span class="tb-txt i">I</span></button>
+        <div class="hl-split">
+          <button type="button" class="tb tb-hl" data-cmd="highlight" id="hlBtn" aria-label="Highlight" title="Highlight (Ctrl Shift H)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l5 5-9 9H6v-5z"/><path d="M4 21h16"/></svg>
+          </button>
+          <button type="button" class="tb tb-hl-more" id="hlMoreBtn" aria-label="Highlight colour" aria-haspopup="menu" aria-expanded="false" title="Highlight colour">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+          </button>
+        </div>
+        <button type="button" class="tb" data-cmd="ul" aria-label="Bulleted list" title="Bulleted list">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" class="dot"/><circle cx="4.5" cy="12" r="1" class="dot"/><circle cx="4.5" cy="18" r="1" class="dot"/></svg>
+        </button>
+        <button type="button" class="tb" data-cmd="task" aria-label="Checklist" title="Checklist">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="7" height="7" rx="1.5"/><path d="M4.8 7.6l1.4 1.4 2.6-2.6M13 7.5h8M3 17.5h7M13 17.5h8"/></svg>
+        </button>
+        <button type="button" class="tb" data-cmd="link" aria-label="Link" title="Link (Ctrl K)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+        </button>
+        <button type="button" class="tb" data-cmd="code" aria-label="Code" title="Code">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+        </button>
+        <span class="tb-sep" aria-hidden="true"></span>
+        <button type="button" class="tb" data-cmd="strike" aria-label="Strikethrough" title="Strikethrough"><span class="tb-txt s">S</span></button>
+        <button type="button" class="tb" data-cmd="ol" aria-label="Numbered list" title="Numbered list"><span class="tb-txt mono">1.</span></button>
+        <button type="button" class="tb" data-cmd="quote" aria-label="Quote" title="Quote"><span class="tb-txt serif">&#8220;</span></button>
+        <button type="button" class="tb" data-cmd="table" aria-label="Table" title="Table">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9.5 10v9M15 10v9"/></svg>
+        </button>
+        <button type="button" class="tb" data-cmd="hr" aria-label="Divider line" title="Divider line"><span class="tb-txt mono">&#8212;</span></button>
+        <button type="button" class="tb" data-cmd="undo" aria-label="Undo" title="Undo (Ctrl Z)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+        </button>
+      </div>
+
+      <div class="panes" id="panes">
+        <section class="pane edit-pane" aria-label="Editor">
+          <div class="editor" id="editorWrap">
+            <div class="backdrop" id="backdrop" aria-hidden="true"><div class="bd-inner" id="bdInner"></div></div>
+            <label class="sr-only" for="editor">Markdown text</label>
+            <textarea id="editor" class="ed-text" spellcheck="true" autocapitalize="sentences" autocomplete="off" placeholder="Start writing Markdown…"></textarea>
+          </div>
+        </section>
+        <section class="pane read-pane" id="readPane" aria-label="Formatted view">
+          <article class="md" id="preview"></article>
+        </section>
+        <nav class="outline" id="outline" aria-label="Outline" hidden>
+          <div class="outline-head">
+            <h2>Outline</h2>
+            <button class="icon-btn" id="outlineClose" type="button" aria-label="Close outline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div>
+          <ol class="outline-list" id="outlineList"></ol>
+        </nav>
+      </div>
+
+      <footer class="ws-foot">
+        <span id="stats"></span>
+        <span id="footRight"></span>
+      </footer>
+
+      <button class="btn small focus-exit" id="focusExit" type="button" hidden>Exit focus</button>
+    </div>
+  </main>
+</div>
+
+<!-- Menus -->
+<div class="menu" id="moreMenu" role="menu" aria-label="Note actions" hidden></div>
+<div class="menu hl-menu" id="hlMenu" role="menu" aria-label="Highlight colour" hidden></div>
+
+<!-- Sheet (dialogs) -->
+<dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2 id="sheetTitle"></h2>
+      <button class="icon-btn" id="sheetClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span id="toastMsg"></span>
+  <button class="toast-act" id="toastAct" type="button" hidden></button>
+</div>
+
+<div class="drop" id="drop" hidden><div class="drop-card">Drop .md files to add them</div></div>
+
+<input type="file" id="fileInput" accept=".md,.markdown,.mdown,.mkd,.mkdn,text/markdown,text/x-markdown,text/plain" multiple hidden>
+<input type="file" id="zipInput" accept=".zip,application/zip" hidden>
+
+<noscript><p style="padding:24px;font-family:sans-serif">Margin needs JavaScript to run.</p></noscript>
+
+<script src="vendor/marked.umd.js"></script>
+<script src="vendor/purify.min.js"></script>
+<script src="vendor/highlight.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
